@@ -43,7 +43,7 @@ except:
                     yield prefix + sub_r
                 else:
                     lo,hi = sub_r.split("-", 1)
-                    for i in xrange(int(lo), int(hi)+1):
+                    for i in range(int(lo), int(hi)+1):
                         yield prefix + str(i).zfill(len(lo))
         else:
             yield p
@@ -122,7 +122,7 @@ draining failing future maint perfctrs
 """.split()
 state_map = dict(
         [("unknown",UNKNOWN)] +
-        zip(state_names, [0]*5 + [DOWN]*6 + [NO_NEW]*5))
+        list(zip(state_names, [0]*5 + [DOWN]*6 + [NO_NEW]*5)))
 
 def make_bar(meta, all_mem_used):
     usage = UNKNOWN_USE
@@ -206,7 +206,7 @@ def main():
 
     for line in stripped_lines_from_cmd(NODE_CMD):
         node,cpuinfo,mem,load,state,partition,max_walltime = line.split(';')
-        in_use,idle,unavailable,cores = map(int, cpuinfo.split('/'))
+        in_use,idle,unavailable,cores = list(map(int, cpuinfo.split('/')))
         if partition.endswith('*'):
             partition = partition[:-1]
             default_partition = partition
@@ -230,11 +230,11 @@ def main():
     screen_width = int(screen_width) - 1
 
     if searching:
-        print SEARCHING_BEGIN
+        print(SEARCHING_BEGIN)
     else:
-        print NORMAL_BEGIN
+        print(NORMAL_BEGIN)
 
-    for k,g in groupby(sorted(node_meta.iteritems(), key=group_id), key=group_id):
+    for k,g in groupby(sorted(iter(node_meta.items()), key=group_id), key=group_id):
         if GNODES_IGNORE.search(k.partition):
             continue
         info_fields = []
@@ -258,20 +258,20 @@ def main():
             info_fields.extend([" "*max_field_width]*dummy_fields)
             name_patterns.extend([NODENAME_UNMATCHED]*dummy_fields)
         rows = len(info_fields) / fields_per_row
-        print make_header(
+        print(make_header(
                 k.partition, partition_walltimes[k.partition], k.cores, k.mem,
-                max_field_width, fields_per_row, default_partition)
-        for r in xrange(0, rows):
-            print "| %s |" % " | ".join(pat % s for pat,s in zip(name_patterns, info_fields)[r::rows])
-        print make_footer(max_field_width, fields_per_row)
+                max_field_width, fields_per_row, default_partition))
+        for r in range(0, rows):
+            print("| %s |" % " | ".join(pat % s for pat,s in zip(name_patterns, info_fields)[r::rows]))
+        print(make_footer(max_field_width, fields_per_row))
 
     if searching:
-        print SEARCHING_END
+        print(SEARCHING_END)
     else:
-        print NORMAL_END
+        print(NORMAL_END)
 
 def usage():
-    print """gnodes provdies a graphical overview of a Slurm cluster
+    print("""gnodes provdies a graphical overview of a Slurm cluster
 
 Usage:
     gnodes <search terms>
@@ -295,7 +295,7 @@ Output:
 
 Input environment variables:
     GNODES_IGNORE   Regex for partitions to hide
-""".format(base=BASE,alloc=ALLOCATED,use=USE,overuse=OVERUSE,unkn=UNKNOWN_USE)
+""".format(base=BASE,alloc=ALLOCATED,use=USE,overuse=OVERUSE,unkn=UNKNOWN_USE))
 
 if __name__ == "__main__":
     if "-h" in sys.argv or "--help" in sys.argv:
